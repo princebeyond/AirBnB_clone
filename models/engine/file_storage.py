@@ -28,15 +28,16 @@ class FileStorage:
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
-        # serialized_objects = {}
-        # for key, obj in self.__objects.items():
-            # serialized_objects[key] = obj.to_dict()
-        # with open(self.__file_path, 'w') as f:
-            # json.dump(serialized_objects, f)
-        serialized_obj = self.__objects
-        obj_dict = {ob_o: serialized_obj[ob_o].to_dict() for ob_o in serialized_obj.keys()}
-        with open(self.__file_path, "w") as f:
-            json.dump(obj_dict, f)
+        serialized_objects = {}
+        for key, obj in self.__objects.items():
+    
+            serialized_objects[key] = obj.to_dict()
+            with open(self.__file_path, 'w') as f:
+                json.dump(serialized_objects, f)
+        # se_ob = self.__objects
+        # obj_dict = {ob_k: se_ob[ob_k].to_dict() for ob_k in se_ob.keys()}
+        # with open(self.__file_path, "w") as f:
+        # json.dump(obj_dict, f)
 
     def reload(self):
         """deserializes the JSON file to __objects
@@ -45,8 +46,8 @@ class FileStorage:
         doesn’t exist, no exception should be raised)"""
         if os.path.exists(self.__file_path):
             with open(self.__file_path, "r") as f:
-                ds = json.load(f)
-                for i in ds.values():
+                data = json.load(f)
+                for i in data.values():
                     classna = i["__class__"]
                     del i["__class__"]
                     self.new(eval(classna)(**i))

@@ -20,13 +20,13 @@ class BaseModel:
         self.updated_at = datetime.now()  # time it was updated.
 
         timeformat = "%Y-%m-%dT%H:%M:%S.%f"
-        if kwargs != 0:
+        if len(kwargs) != 0:
             # if kwargs not empty
             for key, value in kwargs.items():
                 # ilterates over the pairs
-                if key == "__class__":
-                    continue
-                elif key == "created_at" or key == "updated_at":
+                # if key == "__class__":
+                # del kwargs[key]
+                if key == "created_at" or key == "updated_at":
                     # treats values as datetime striing
                     self.__dict__[key] = datetime.strptime(value, timeformat)
                     # and coverts it to date time obj
@@ -37,8 +37,9 @@ class BaseModel:
         else:
             # it creates a new instance with a new id
             # and the current datetime as created_at and updated_at.
-            self.id = str(uuid4())
-            self.created_at = self.updated_at = datetime.now()
+            # self.id = str(uuid4())
+            # self.created_at = self.updated_at = datetime.today()
+            models.storage.new(self)
 
     def save(self):
         """updates the public instance attribute with nowtime"""
@@ -53,12 +54,12 @@ class BaseModel:
         dict_copy["__class__"] = self.__class__.__name__
         # converts my attributes to string object
         # in isoformat()
-        dict_copy['created_at'] = self.created_at.isoformat()
-        dict_copy['updated_at'] = self.updated_at.isoformat()
+        dict_copy["updated_at"] = self.updated_at.isoformat()
+        dict_copy["created_at"] = self.created_at.isoformat()
         return dict_copy
 
     def __str__(self):
         """return a string that includes the class name, id,
         and dictionary representation of the instance."""
         classna = self.__class__.__name__
-        return "[{}] ({}) {}".format(classna, self.id, self.to_dict())
+        return "[{}] ({}) {}".format(classna, self.id, self.__dict__)
